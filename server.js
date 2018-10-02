@@ -9,7 +9,8 @@ var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
 const {
-    generateMessage
+    generateMessage,
+    generateLocationMessage
 } = require('./messages');
 
 app.use(express.static(publicPath));
@@ -30,6 +31,10 @@ io.on('connection', (socket) => {
         //     text: message.text,
         //     createAt: new Date().getTime()
         // });
+    });
+
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
     });
 
     socket.on('disconnect', () => {
